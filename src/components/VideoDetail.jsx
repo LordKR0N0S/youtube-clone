@@ -2,42 +2,81 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Box, Stack, Typography } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
-import { Videos } from './';
+import { Videos, ErrorPage } from './';
 import { fetchFromAPI } from '../utils/fetchFromAPI';
 import ReactPlayer from 'react-player';
 
 const VideoDetail = () => {
-  const [videoDetail, setVideoDetail] = useState(null);
-  const [videos, setVideos] = useState(null);
+  const [videoDetail, setVideoDetail] = useState({
+    detail: {},
+    errorMessage: '',
+    errorStatus: 0,
+  });
+  const [fetchedVideos, setFetchedVideos] = useState({
+    videos: [],
+    errorMessage: '',
+    errorStatus: 0,
+  });
+
   const { id } = useParams();
 
   useEffect(() => {
-    fetchFromAPI(`videos?part=snippet,statistics&id=${id}`).then((data) =>
-      setVideoDetail(data.items[0])
+    fetchFromAPI(`videos?part=snippet,statistics&id=${id}`).then((response) =>
+      setVideoDetail({
+        detail: response?.data?.items[0],
+        errorMessage: response?.message,
+        errorStatus: response?.response?.status,
+      })
     );
 
     fetchFromAPI(`search?part=snippet&relatedToVideoId=${id}&type=video`).then(
-      (data) => setVideos(data.items)
+      (response) =>
+        setFetchedVideos({
+          videos: response?.data?.items,
+          errorMessage: response?.message,
+          errorStatus: response?.response?.status,
+        })
     );
   }, [id]);
 
-  if (!videoDetail?.snippet) return 'Loading...';
+  if (videoDetail.errorMessage) {
+    return (
+      <ErrorPage
+        errorMessage={videoDetail.errorMessage}
+        errorStatus={videoDetail.errorStatus}
+      />
+    );
+  }
+
+  if (!videoDetail?.detail?.snippet) return 'Loading...';
 
   const {
     snippet: { title, channelId, channelTitle },
     statistics: { viewCount, likeCount },
-  } = videoDetail;
+  } = videoDetail.detail;
 
   return (
     <Box minHeight='91vh'>
       <Stack direction={{ xs: 'column', md: 'row' }}>
         <Box flex={1}>
-          <Box sx={{ width: '100%', position: 'sticky', top: '86px' }}>
-            <ReactPlayer
+          <Box sx={{ width: '100%' }}>
+            <div className='player-wrapper'>
+              <ReactPlayer
+                className='react-player'
+                url={`https://www.youtube.com/watch?v=${id}`}
+                controls
+                width='100%'
+                height='100%'
+                playbackRate={1}
+              />
+            </div>
+            {/* <ReactPlayer
               url={`https://www.youtube.com/watch?v=${id}`}
               controls
-              sx={{ width: '100%' }}
-            />
+              playbackRate
+              width='100%'
+              height='100%'
+            /> */}
             <Typography color='#FFF' variant='h5' fontWeight='bold' p={2}>
               {title}
             </Typography>
@@ -76,7 +115,13 @@ const VideoDetail = () => {
           justifyContent='center'
           alignItems='center'
         >
-          <Videos videos={videos} direction='column' />
+          {fetchedVideos.errorMessage ? (
+            <Typography variant='body1' sx={{ color: 'red' }}>
+              Server error. Cant fetch list of videos from the server
+            </Typography>
+          ) : (
+            <Videos videos={fetchedVideos.videos} direction='column' />
+          )}{' '}
         </Box>
       </Stack>
     </Box>

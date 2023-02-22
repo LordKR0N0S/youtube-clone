@@ -12,9 +12,31 @@ const options = {
 };
 
 export const fetchFromAPI = async (url) => {
-  const { data } = await axios.get(`${BASE_URL}/${url}`, options);
-  console.log(data);
-  return data;
+  try {
+    const response = await axios.get(`${BASE_URL}/${url}`, options);
+    console.log(response)
+    return response;
+  } catch (error) {
+    if (error.response) {
+      // Запрос был сделан, и сервер ответил кодом состояния, который
+      // выходит за пределы 2xx
+      console.log(error);
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      return error
+    } else if (error.request) {
+      // Запрос был сделан, но ответ не получен
+      // `error.request`- это экземпляр XMLHttpRequest в браузере и экземпляр
+      // http.ClientRequest в node.js
+      console.log(error.request);
+      return error
+    } else {
+      // Произошло что-то при настройке запроса, вызвавшее ошибку
+      console.log('Error', error.message);
+    }
+    console.log(error);
+  }
 };
 // export const fetchFromAPI = async (url) => {
 //   try {

@@ -1,18 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import { SideBar, Videos } from './';
+import { SideBar, Videos, ErrorPage } from './';
 import { fetchFromAPI } from '../utils/fetchFromAPI';
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState('New');
-  const [videos, setVideos] = useState([]);
+  const [fetchedData, setFetchedData] = useState({
+    videos: [],
+    errorMessage: '',
+    errorStatus: 0
+  });
 
   useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) => {
-      console.log(data);
-      setVideos(data.items);
-    });
+    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then(
+      (response) => {
+        console.log(response);
+        setFetchedData({
+          videos: response?.data?.items,
+          errorMessage: response?.message,
+          errorStatus: response?.response?.status,
+        });
+      }
+    );
   }, [selectedCategory]);
+
+  if (fetchedData.errorMessage) {
+    return (
+      <ErrorPage
+        errorMessage={fetchedData.errorMessage}
+        errorStatus={fetchedData.errorStatus}
+      />
+    );
+  }
 
   return (
     <Stack sx={{ flexDirection: { sx: 'column', md: 'row' } }}>
@@ -44,7 +63,7 @@ const Feed = () => {
         >
           {selectedCategory} <span style={{ color: '#F31503' }}>videos</span>
         </Typography>
-        <Videos videos={videos} justifyContent='start' />
+        <Videos videos={fetchedData.videos} justifyContent='start' />
       </Box>
     </Stack>
   );

@@ -3,9 +3,6 @@ import { categories } from '../utils/constants';
 import { Stack } from '@mui/material';
 
 const SideBar = ({ selectedCategory, setSelectedCategory }) => {
-  // const selectedCategory = 'New';
-  console.log(categories);
-
   return (
     <Stack
       direction='row'

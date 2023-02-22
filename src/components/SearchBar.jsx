@@ -15,7 +15,7 @@ const SearchBar = () => {
     if (searchTerm) {
       navigate(`/search/${searchTerm}`);
       setSearchTerm('');
-      console.log(searchTerm)
+      console.log(e);
     }
   };
 
@@ -34,7 +34,7 @@ const SearchBar = () => {
       <input
         className='search-bar'
         placeholder='Search...'
-        // value={searchTerm}
+        value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       <IconButton type='submit' sx={{ p: '10x', color: 'red' }}>

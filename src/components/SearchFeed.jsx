@@ -3,19 +3,36 @@ import { Box, Typography } from '@mui/material';
 import { Videos } from './';
 import { fetchFromAPI } from '../utils/fetchFromAPI';
 import { useParams } from 'react-router-dom';
+import { ErrorPage } from './';
 
 const SearchFeed = () => {
-  const [videos, setVideos] = useState([]);
+  const [fetchedData, setVideos] = useState({
+    videos: [],
+    errorMessage: '',
+    errorStatus: 0,
+  });
   const { searchTerm } = useParams();
   console.log(useParams());
 
   useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${searchTerm}`).then((data) =>
-      setVideos(data.items)
+    fetchFromAPI(`search?part=snippet&q=${searchTerm}`).then(
+      (response) =>
+        setVideos({
+          videos: response?.data?.items,
+          errorMessage: response?.message,
+          errorStatus: response?.response?.status,
+        })
     );
   }, [searchTerm]);
 
-  console.log(videos);
+  if (fetchedData.errorMessage) {
+    return (
+      <ErrorPage
+        errorMessage={fetchedData.errorMessage}
+        errorStatus={fetchedData.errorStatus}
+      />
+    );
+  }
 
   return (
     <Box p={2} sx={{ overflowY: 'auto', height: '86vh', flex: 2 }}>
@@ -23,7 +40,7 @@ const SearchFeed = () => {
         Search results for:{' '}
         <span style={{ color: '#F31503' }}>{searchTerm}</span>
       </Typography>
-      <Videos videos={videos} justifyContent='start' />
+      <Videos videos={fetchedData.videos} justifyContent='start' />
     </Box>
   );
 };
