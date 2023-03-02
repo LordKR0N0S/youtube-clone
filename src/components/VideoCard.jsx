@@ -21,7 +21,6 @@ const VideoCard = ({
         width: { xs: '100%', sm: '358px', md: '320px' },
         boxShadow: 'none',
         borderRadius: 0,
-        // display: 'flex'
       }}
     >
       <Link to={videoId ? `/video/${videoId}` : demoVideoUrl}>

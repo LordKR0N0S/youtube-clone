@@ -8,13 +8,12 @@ const Feed = () => {
   const [fetchedData, setFetchedData] = useState({
     videos: [],
     errorMessage: '',
-    errorStatus: 0
+    errorStatus: 0,
   });
 
   useEffect(() => {
     fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then(
       (response) => {
-        console.log(response);
         setFetchedData({
           videos: response?.data?.items,
           errorMessage: response?.message,
@@ -37,7 +36,7 @@ const Feed = () => {
     <Stack sx={{ flexDirection: { sx: 'column', md: 'row' } }}>
       <Box
         sx={{
-          height: { sx: 'auto', md: '86vh' },
+          height: { sx: 'auto', md: '87vh' },
           borderRight: '1px solid #3d3d3d',
           px: { sx: 0, md: 2 },
         }}
@@ -54,7 +53,7 @@ const Feed = () => {
           Copyright 2022 JSM Media
         </Typography>
       </Box>
-      <Box p={2} sx={{ overflowY: 'auto', height: '86vh', flex: 2 }}>
+      <Box p={2} sx={{ overflowY: 'auto', height: '87vh', flex: 2 }}>
         <Typography
           variant='h4'
           fontWeight='bold'

@@ -12,16 +12,16 @@ const SearchFeed = () => {
     errorStatus: 0,
   });
   const { searchTerm } = useParams();
-  console.log(useParams());
 
   useEffect(() => {
     fetchFromAPI(`search?part=snippet&q=${searchTerm}`).then(
-      (response) =>
+      (response) => {
         setVideos({
           videos: response?.data?.items,
           errorMessage: response?.message,
           errorStatus: response?.response?.status,
-        })
+        });
+      }
     );
   }, [searchTerm]);
 

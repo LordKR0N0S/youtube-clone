@@ -6,7 +6,7 @@ import {
   VideoDetail,
   ChannelDetail,
   SearchFeed,
-  // ErrorPage,
+  ErrorPage,
 } from './components';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
           <Route path='/video/:id' exact element={<VideoDetail />} />
           <Route path='/channel/:id' exact element={<ChannelDetail />} />
           <Route path='/search/:searchTerm' exact element={<SearchFeed />} />
-          {/* <Route path='/errorPage' exact element={<ErrorPage />} /> */}
+          <Route path='/errorPage' exact element={<ErrorPage />} />
         </Routes>
       </Box>
     </BrowserRouter>
