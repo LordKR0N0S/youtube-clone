@@ -20,11 +20,12 @@ export const fetchFromAPI = async (url) => {
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
-      return error
+      return error;
     } else if (error.request) {
       console.log(error.request);
-      return error
+      return error;
     } else {
+      console.log(error);
       console.log('Error', error.message);
     }
     console.log(error);
